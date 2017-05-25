@@ -203,8 +203,12 @@ class SelectorCV(ModelSelector):
         word_sequences = self.sequences
         if self.verbose:
             print(f"My sequences for {word}: {self.sequences}")
-        # split_method = KFold()
+        if len(self.lengths)<2:
+            if self.verbose:
+                print(f"not enough sequences ( {self.sequences} ) to train / crossvalidate {word}") 
+            return None
         split_method = KFold(n_splits=min(3,len(self.lengths)))
+        
         # nu stiu daca am nevoie de toate combinatiile (cv_train_idx, cv_test_idx)
         cv_train_idx, cv_test_idx = next(split_method.split(word_sequences))
         # print("Train fold indices:{} Test fold indices:{}".format(cv_train_idx, cv_test_idx))  # view indices of the folds
