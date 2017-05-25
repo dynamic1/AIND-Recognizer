@@ -202,7 +202,8 @@ class SelectorCV(ModelSelector):
         word = self.this_word
         word_sequences = self.sequences
         if self.verbose:
-            print(f"My sequences for {word}: {self.sequences}")
+            # print(f"My sequences for {word}: {self.sequences}")
+            pass
         if len(self.lengths)<2:
             if self.verbose:
                 print(f"not enough sequences ( {self.sequences} ) to train / crossvalidate {word}") 
@@ -228,8 +229,8 @@ class SelectorCV(ModelSelector):
                 model = GaussianHMM(n_components=n, covariance_type="diag", n_iter=1000,
                                     random_state=self.random_state, verbose=False).fit(X, lengths)
                 hmm_models[n] = model
-                # ToDo
-                # evaluez modelul dar nu pe X si lengths ( care sunt Train indices), ci pe Test Indices
+                
+                # evaluez model
                 logL = model.score(Y, y_lengths)
                 if best_score is None or best_score < logL :
                     best_score = logL
@@ -240,9 +241,9 @@ class SelectorCV(ModelSelector):
                 hmm_models[n] = None
                 if self.verbose:
                     print(f"failed to build model with {n} states for {word}")
-               
-        # acum cred ca trebuie sa le evaluez si sa aleg pe cel mai bun
-
+       
         if self.verbose:
             print(f"best model for {word} has {best_n} states")
+        if best_n is None:
+            return None
         return hmm_models[best_n]
